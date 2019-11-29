@@ -3,9 +3,7 @@
 
 filetype indent on
 
-set encoding=UTF-8
-
-" **** Colorscheme settings
+" ================ Colorscheme ======================
 set t_Co=256
 set laststatus=2  " always slow statusline
 " set $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -14,42 +12,40 @@ set background=dark
 colorscheme solarized8
 let g:airline_theme='solarized'
 
-set fileformat=unix
-set shortmess+=c
 
-" Enable mouse use in all modes
-set mouse=a  " change cursor per mode
-" Send more characters for redraws
-set ttyfast
+" ================ Indentation ======================
+"
+" set autoindent                        " New line inherits indentation from the previous line
+" set nosmartindent                     " Avoid losing indentation when inserting '#'
+" set cindent                           " Should be smarter than smartindent. Autoindents after brackets, ..
+set tabstop=4                           " 1 Tab = 4 spaces
+set softtabstop=4                       " Number of spaces for tab in insert mode
+set shiftwidth=4                        " 1 Tab = 4 spaces
+set smarttab                            " Interpret Tab depending on where is the cursor
+set expandtab                           " Substitute tabs with spaces
+set ai                                  " Auto indent: copy indentation from previous line
+set wrap                                " Wrap lines
+" set nowrap                              " Don't wrap lines
+set linebreak                           " Wrap lines at convenient points
 
-set expandtab
-set tabstop=4
-set shiftwidth=4
-set fillchars+=vert:\  " remove chars from seperators
-set softtabstop=4
-set history=1000  " remember more commands and search history
-set nobackup  " no backup or swap file, live dangerously
+" Auto indent pasted text
+nnoremap p p=`]<C-o>
+nnoremap P P=`]<C-o>
+
+filetype plugin on
+filetype indent on
+
+set list listchars=tab:\ \ ,trail:·     " Display tabs and trailing spaces visually
+
+
+" ================ Turn Off Swap Files ==============
+"
+set nobackup                    " no backup or swap file, live dangerously
 set nowb
-set noswapfile  " swap files give annoying warning
-set scrolloff=3 " keep three lines between the cursor and the edge of the screen
-set undodir=~/.vim/undodir
-" set undofile  " save undos
-set undolevels=10000  " maximum number of changes that can be undone
-set undoreload=100000  " maximum number lines to save for undo on a buffer reload
-set autoread  " Check if file is modified externally
-set backspace=eol,start,indent " Configure backspace so it acts as it should
-set noshowmode  " keep command line clean
-set noshowcmd
-set splitright  " prefer splitting right 
-set splitbelow  " prefer splitting below
-set cpoptions+=x  " stay at seach item when <esc>
-set noerrorbells  " remove bells (i think this is default in neovim)
-set visualbell
-set t_vb=
-" set relativenumber
-" set number  " always show current line number
+set noswapfile                  " swap files give annoying warning
+set undodir=~/.vim/undodir      " Where to store the undo file
+" set undofile                  " Use an undo file: persistent undos!
 set viminfo='20,<1000  " allow copying of more than 50 lines to other applications
-
 " Tell vim to remember certain things when we exit
 "  '10  :  marks will be remembered for up to 10 previously edited files
 "  "100 :  will save up to 100 lines for each register
@@ -58,7 +54,74 @@ set viminfo='20,<1000  " allow copying of more than 50 lines to other applicatio
 "  n... :  where to save the viminfo files
 "" set viminfo='10,\"100,:20,%,n~/.viminfo
 
-set clipboard=unnamedplus
+" ================ General Config ====================
+"
+set fillchars+=vert:\           " remove chars from seperators
+set history=10000               " Lines of history to remember
+set undolevels=10000            " Number of undos stored on disk
+set undoreload=100000           " maximum number lines to save for undo on a buffer reload
+set undofile                    " Use an undo file: persistent undos!
+set undodir=~/.vimundo/         " Where to store the undo file
+set autoread                    " Check if file is modified externally
+set backspace=eol,start,indent  " Configure backspace so it acts as it should
+" set number                    " always show current line number
+" set relativenumber
+set scrolloff=3                 " keep three lines between the cursor and the edge of the screen
+
+syntax on
+set whichwrap+=<,>,h,l
+set lazyredraw                 " Don't redraw during macros (for performance)
+set ttyfast                    " Send more characters for redraws
+set encoding=utf8              " Use utf8/en_US
+set ffs=unix,dos,mac           " Use Unix as the standard file type
+let mapleader=","
+set tm=500                     " Timeout after leader key
+map <C-Z> <Nop>|               " Prevent ctrl-z from closing vim
+set pastetoggle=<F2>           " F2 = paste mode toggle
+set clipboard=unnamedplus      " Use system clipboard
+set splitbelow                 " Open new split panes to right and bottom
+set splitright                 " Open new split panes to right and bottom
+set mouse=a                    " Enable mouse scrolling
+" set ttymouse=xterm
+set shortmess+=c
+set noshowmode                  " keep command line clean
+set noshowcmd
+set cpoptions+=x                " stay at seach item when <esc>
+set t_vb=                       " set the effect of the vim visual bell to do nothing
+set noerrorbells                " remove bells (i think this is default in neovim)
+set visualbell
+
+" ================ Vim User Interface ====================
+"
+set so=7                        " Autoscroll to keep cursor n lines from top/bottom of page
+set wildmenu                    " Turn on the WiLd menu (autocomplete :commands)
+set wildmode=longest:list,full
+set wildignore=.svn,CVS,.git,*.o,*.a,*.class,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,*.pdf,*.aux
+set showmatch                   " Show matching brackets
+set mat=3                       " Tenths of a second to blink when matching brackets
+set showcmd                     " Show incomplete commands
+set ruler                       " Always show current position
+set rulerformat=%l,%c%V%=%P     " Show line and percentage (default)
+set cmdheight=1                 " Height of the command bar
+
+
+" ================ Vim search setup ====================
+"
+set hlsearch        " Highlight matches
+set incsearch       " Makes search act like search in modern browsers
+set ignorecase      " Set case insensitive search
+set smartcase       " Case sensitive only if uppercase target
+set wrapscan        " begin search from top of file when nothing is found anymore
+
+" ================ Errors and warnings notification ====================
+"
+"" " Syntax highlight and colors
+"" syntax on                           " Enable syntax highlighting
+"" filetype on                         " Try to detect filetypes
+"" filetype plugin indent on           " Turn on filetype-specific indenting modes and plugins
+"" let python_highlight_all=1          " Extra highlights
+
+
 " toggle nerdtree on ctrl+n
 map <C-n> :NERDTreeToggle<CR>
 map <C-t> :set nosplitright<CR>:TagbarToggle<CR>:set splitright<CR>
@@ -72,8 +135,8 @@ autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
 let g:NERDTreeGitStatusWithFlags = 1
 
-" **** Ulti-snips 
-" Trigger configuration. Do not use <tab> 
+" **** Ulti-snips
+" Trigger configuration. Do not use <tab>
 " if you use https://github.com/Valloric/YouCompleteMe.
 let g:UltiSnipsExpandTrigger="<C-space>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
@@ -113,7 +176,7 @@ set pumheight=5
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <silent> <expr> <CR> (pumvisible() && empty(v:completed_item)) ?  "\<c-y>\<cr>" : "\<CR>"
- 
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " **** Airline settings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -218,7 +281,7 @@ hi pythonImportedClassDef ctermfg=127
 " vimgutter options
 let g:gitgutter_override_sign_column_highlight = 0
 let g:gitgutter_map_keys = 0
- 
+
 " **** Vim signify
 map <F9> :SignifyToggle<CR>
 let g:signify_skip_filename_pattern  = ['\.pipertmp.*']
@@ -235,38 +298,11 @@ set updatetime=100
 " **** Vim markdown
 let g:vim_markdown_folding_disabled = 1
 
-" """"""""""""""""""""""" Vim user interface """"""""""""""""""""""""""""""""""
-set so=7                        " Autoscroll to keep cursor n lines from top/bottom of page
-set wildmenu                    " Turn on the WiLd menu (autocomplete :commands)
-set wildmode=longest:list,full
-set wildignore=.svn,CVS,.git,*.o,*.a,*.class,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,*.pdf,*.aux
-set showmatch                   " Show matching brackets
-set mat=3                       " Tenths of a second to blink when matching brackets
-set showcmd                     " Show incomplete commands
-set ruler                       " Always show current position
-set rulerformat=%l,%c%V%=%P     " Show line and percentage (default)
-set cmdheight=1                 " Height of the command bar
- 
 " Enable syntax highlighting for .bash_aliases
 au BufNewFile,BufRead .bashrc*,bashrc,bash.bashrc,.bash_aliases,.bash_profile*,.bash_logout*,*.bash,*.ebuild set filetype=sh
 au BufNewFile,BufRead *.txt set filetype=rest
 " Enable spellcheck for tex and markdown
 autocmd FileType latex,tex,md,markdown setlocal spell
-
-" """"""""""""""""""""""" Vim search setup """"""""""""""""""""""""""""""""""""
-set hlsearch        " Highlight matches
-set incsearch       " Makes search act like search in modern browsers
-set ignorecase      " Set case insensitive search
-set smartcase       " Case sensitive only if uppercase target
-set wrapscan        " begin search from top of file when nothing is found anymore
-
-"" " """"""""""""""""""""""" Errors and warnings notifications """""""""""""""""""
-"" " Syntax highlight and colors
-"" syntax on                           " Enable syntax highlighting
-"" filetype on                         " Try to detect filetypes
-"" filetype plugin indent on           " Turn on filetype-specific indenting modes and plugins
-"" let python_highlight_all=1          " Extra highlights
-
 
 " **** Supertab
 " au FileType python set omnifunc=pythoncomplete#Complete " This breaks Jedi
@@ -277,7 +313,7 @@ let g:SuperTabDefaultCompletionType = "<c-x><c-o>" " always use omni completion 
 
 " """"""""""""""""""""""" Plugin settings """""""""""""""""""""""""""""""""""""
 
-" **** VimTex 
+" **** VimTex
 " }}}2
 " {{{2 filetype: tex
 
@@ -322,7 +358,7 @@ call vimtex#imaps#add_map({
     \})
 
 let g:vimtex_compiler_latexmk = {
-        \ 'backend' : 'process', 
+        \ 'backend' : 'process',
         \ 'background' : 1,
         \ 'build_dir' : '',
         \ 'callback' : 0,
