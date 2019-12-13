@@ -12,6 +12,11 @@ set background=dark
 colorscheme solarized8
 let g:airline_theme='solarized'
 
+" Hightlight current line
+let g:conoline_auto_enable = 1
+let g:conoline_use_colorscheme_default_insert=1
+let g:conoline_use_colorscheme_default_normal=1
+
 
 " ================ Indentation ======================
 "
@@ -233,6 +238,13 @@ au FileType python map <silent> <leader>B Ofrom pudb import set_trace; set_trace
 au FileType python map <silent> <leader>j ofrom pdb import set_trace; set_trace()<esc>
 au FileType python map <silent> <leader>J Ofrom pdb import set_trace; set_trace()<esc>
 
+"""""""""""""""""""""""""" semshi settings """""""""""""""""""""""""""""""
+" Do not highlight for all occurances of variable under cursor
+let g:semshi#mark_selected_nodes=0
+" Do not show error sign since neomake is specicialized for that
+let g:semshi#error_sign=v:false
+
+
 " ale options
 let g:ale_python_flake8_options = '--ignore=E129,E501,E302,E265,E241,E305,E402,W503'
 let g:ale_python_pylint_options = '-j 0 --max-line-length=80 --ignore=C0111'
@@ -309,6 +321,19 @@ autocmd FileType latex,tex,md,markdown setlocal spell
 let g:SuperTabDefaultCompletionType = "context"
 " set completeopt=menuone,longest,preview  # kyle
 let g:SuperTabDefaultCompletionType = "<c-x><c-o>" " always use omni completion (i.e. Jedi)
+
+
+" ================ Multiple-Cursor settings ======================
+let g:multi_cursor_use_default_mapping=0
+" Default mapping
+let g:multi_cursor_start_word_key      = '<C-m>'
+let g:multi_cursor_select_all_word_key = '<A-m>'
+let g:multi_cursor_start_key           = 'g<C-m>'
+let g:multi_cursor_select_all_key      = 'g<A-m>'
+let g:multi_cursor_next_key            = '<C-n>'
+let g:multi_cursor_prev_key            = '<C-p>'
+let g:multi_cursor_skip_key            = '<C-x>'
+let g:multi_cursor_quit_key            = '<Esc>'
 
 
 " """"""""""""""""""""""" Plugin settings """""""""""""""""""""""""""""""""""""
