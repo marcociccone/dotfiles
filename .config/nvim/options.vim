@@ -34,8 +34,8 @@ set wrap                                " Wrap lines
 set linebreak                           " Wrap lines at convenient points
 
 " Auto indent pasted text
-nnoremap p p=`]<C-o>
-nnoremap P P=`]<C-o>
+" nnoremap p p=`]<C-o>
+" nnoremap P P=`]<C-o>
 
 filetype plugin on
 filetype indent on
