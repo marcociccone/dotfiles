@@ -31,10 +31,10 @@ alias egrep='egrep --color=auto'
 command -v colordiff >/dev/null 2>&1 && { alias diff=colordiff; }
 
 # Graphical vim
-if type vimx >/dev/null 2>&1; then 
+if type vimx >/dev/null 2>&1; then
     alias vim='vimx'
     export GIT_EDITOR="vimx"
-elif type mvim >/dev/null 2>&1; then 
+elif type mvim >/dev/null 2>&1; then
     alias vim='mvim -v'
     export GIT_EDITOR="mvim -v"
 fi
@@ -124,6 +124,14 @@ gpu_who() {
     for i in `nvidia-smi -q -d PIDS | grep ID | cut -d ":" -f2`; do ps -u -p "$i"; done
 }
 
+# ram used by user
+ram_who() {
+    for USR in $(ps axo user:20 | sort -u)
+    do
+        ps -U $USR --no-headers -o rss 2>/dev/null | awk -v user=$USR '{ sum+=$1} END {print user, int(sum/1024) "MB"}'
+    done
+}
+
 # rsync options
 alias rsyncopt="rsync -a -X --partial -h --progress --bwlimit=20000 --copy-links "
 alias rsyncopt_nolimit="rsync -a -X --partial -h --progress --copy-links "
@@ -156,21 +164,32 @@ D10(){ export DISPLAY=localhost:10.0; }
 D11(){ export DISPLAY=localhost:11.0; }
 D12(){ export DISPLAY=localhost:12.0; }
 
+wait-pid(){ tail --pid=$1 -f /dev/null; }
+wait-file(){ while [ ! -f $1 ]; do sleep 1; done; }
+
 # DOCKER
 # ======
 
 alias dk="docker"
 alias dkl="docker logs"
 alias dki="docker images"
-alias dkrm="docker rm"
 alias dkps="docker ps"
 alias dkpsa="docker ps -a"
+
+# dkrmname <name>: remove all containers having <name> in the container's name
+dkrmname(){
+    ids=`docker ps -a | grep $1 | awk '{print $1;}'`
+    docker rm $ids
+}
+
+# dkattach <name>: attach to existing container
+dkattach() { docker start $1 && docker attach $1; }
 
 # dkattach <name>: attach to existing container
 dkattach() { docker start $1 && docker attach $1; }
 # dkrun [<args>] <image>: runs a container from a docker image
 
-dkrun(){ 
+dkrun(){
    nvidia-docker run  -ti\
        --workdir /host$PWD \
        --volume /:/host \
@@ -193,23 +212,23 @@ tb-docker() {
 }
 
 jupyter-docker() {
-    docker run --rm -it --shm-size 8G --cpuset-cpus=$2 -p $1:$1 --user $(id -u):$(id -g) --group-add users -v `pwd`:/exp -v $HOME/.jupyter/:/.jupyter -t ciccone/dl:cuda10_pytorch-1.1.0_tf-1.14_py36 jupyter notebook  --ip=0.0.0.0 --port=$1;
+    docker run --rm -it --shm-size 8G --cpuset-cpus=$2 -p $1:$1 --user $(id -u):$(id -g) --group-add users -v `pwd`:/exp -v $HOME/.jupyter/:/.jupyter -t ciccone/dl:cuda10.1_pytorch-1.3.1_tf-1.15_py36 jupyter notebook  --ip=0.0.0.0 --port=$1;
 }
 
 jupyter-nvidia-docker() {
-    NV_GPU=$3 nvidia-docker run --rm -it --shm-size 8G --cpuset-cpus=$2 -p $1:$1 --user $(id -u):$(id -g) --group-add users -v `pwd`:/exp -v $HOME/.jupyter/:/.jupyter  -t ciccone/dl:cuda10_pytorch-1.1.0_tf-1.14_py36 jupyter notebook --ip=0.0.0.0 --port=$1;
+    NV_GPU=$3 nvidia-docker run --rm -it --shm-size 8G --cpuset-cpus=$2 -p $1:$1 --user $(id -u):$(id -g) --group-add users -v `pwd`:/exp -v $HOME/.jupyter/:/.jupyter  -t ciccone/dl:cuda10.1_pytorch-1.3.1_tf-1.15_py36 jupyter notebook --ip=0.0.0.0 --port=$1;
 }
 
 jupyterlab-docker() {
-    docker run --rm -it --shm-size 8G --cpuset-cpus=$2 -p $1:$1 --user $(id -u):$(id -g) --group-add users -v `pwd`:/exp -v $HOME/.jupyter/:/.jupyter -t ciccone/dl:cuda10_pytorch-1.1.0_tf-1.14_py36 jupyter lab  --ip=0.0.0.0 --port=$1;
+    docker run --rm -it --shm-size 8G --cpuset-cpus=$2 -p $1:$1 --user $(id -u):$(id -g) --group-add users -v `pwd`:/exp -v $HOME/.jupyter/:/.jupyter -t ciccone/dl:cuda10.1_pytorch-1.3.1_tf-1.15_py36 jupyter lab  --ip=0.0.0.0 --port=$1;
 }
 
 jupyterlab-nvidia-docker() {
-    NV_GPU=$3 nvidia-docker run --rm -it --shm-size 8G --cpuset-cpus=$2 -p $1:$1 --user $(id -u):$(id -g) --group-add users -v `pwd`:/exp -v $HOME/.jupyter/:/.jupyter -t ciccone/dl:cuda10_pytorch-1.1.0_tf-1.14_py36 jupyter lab  --ip=0.0.0.0 --port=$1;
+    NV_GPU=$3 nvidia-docker run --rm -it --shm-size 8G --cpuset-cpus=$2 -p $1:$1 --user $(id -u):$(id -g) --group-add users -v `pwd`:/exp -v $HOME/.jupyter/:/.jupyter -t ciccone/dl:cuda10.1_pytorch-1.3.1_tf-1.15_py36 jupyter lab  --ip=0.0.0.0 --port=$1;
 }
 
 # jupyter-nvidia-docker() {
 #     NV_GPU=$3 nvidia-docker run --rm -it --shm-size 8G --cpuset-cpus=$2 -p $1:$1 --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor=unconfined --user $(id -u):$(id -g) --group-add users -v `pwd`:/exp -t ciccone/dl:cuda10_pytorch-1.1.0_tf-1.14_py36 jupyter notebook --ip=0.0.0.0 --port=$1 --NotebookApp.allow_origin='https://colab.research.google.com' --port=$1 --NotebookApp.port_retries=0;
 # }
-# 
+#
 
