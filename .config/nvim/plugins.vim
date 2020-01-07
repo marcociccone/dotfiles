@@ -14,6 +14,7 @@ Plug 'itchyny/lightline.vim'
 Plug 'chriskempson/base16-vim'
 Plug 'lifepillar/vim-solarized8'
 Plug 'lifepillar/vim-gruvbox8'
+Plug 'sonph/onehalf', {'rtp': 'vim/'}
 
 Plug 'vim-airline/vim-airline'                      " make statusline awesome
 Plug 'vim-airline/vim-airline-themes'               " themes for statusline 7

@@ -9,8 +9,10 @@ set laststatus=2  " always slow statusline
 " set $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
 set background=dark
-colorscheme solarized8
+colorscheme solarized8_flat
 let g:airline_theme='solarized'
+" colorscheme onehalfdark
+" let g:airline_theme='onehalfdark'
 
 " Hightlight current line
 let g:conoline_auto_enable = 1
@@ -243,6 +245,9 @@ au FileType python map <silent> <leader>J Ofrom pdb import set_trace; set_trace(
 let g:semshi#mark_selected_nodes=0
 " Do not show error sign since neomake is specicialized for that
 let g:semshi#error_sign=v:false
+let g:semshi#excluded_hl_groups=['local', 'attribute']
+let g:semshi#no_default_builtin_highlight=1
+let g:semshi#simplify_markup=1
 
 
 " ale options
