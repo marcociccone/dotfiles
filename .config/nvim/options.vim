@@ -154,31 +154,31 @@ let g:UltiSnipsEditSplit="vertical"
 " **** Tasklist ****
 map <leader>tl <Plug>TaskList
 
-" **** ncm2 settings
-autocmd BufEnter * call ncm2#enable_for_buffer()
-set completeopt=menuone,noselect,noinsert
-" make it FAST
-let ncm2#popup_delay = 1
-let ncm2#complete_length = [[1,1]]
-let g:ncm2#matcher = 'substrfuzzy'
+ " **** ncm2 settings
+ autocmd BufEnter * call ncm2#enable_for_buffer()
+ set completeopt=menuone,noselect,noinsert
+ " make it FAST
+ let ncm2#popup_delay = 1
+ let ncm2#complete_length = [[1,1]]
+ let g:ncm2#matcher = 'substrfuzzy'
 
-" NCM2
-augroup NCM2
-  autocmd!
-  " some other settings...
-  " uncomment this block if you use vimtex for LaTex
-  autocmd Filetype tex call ncm2#register_source({
-            \ 'name': 'vimtex',
-            \ 'priority': 8,
-            \ 'scope': ['tex'],
-            \ 'mark': 'tex',
-            \ 'word_pattern': '\w+',
-            \ 'complete_pattern': g:vimtex#re#ncm2,
-            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
-            \ })
-augroup END
+ " NCM2
+ augroup NCM2
+   autocmd!
+   " some other settings...
+   " uncomment this block if you use vimtex for LaTex
+   autocmd Filetype tex call ncm2#register_source({
+             \ 'name': 'vimtex',
+             \ 'priority': 8,
+             \ 'scope': ['tex'],
+             \ 'mark': 'tex',
+             \ 'word_pattern': '\w+',
+             \ 'complete_pattern': g:vimtex#re#ncm2,
+             \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+             \ })
+ augroup END
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set pumheight=5
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
@@ -243,14 +243,14 @@ au FileType python map <silent> <leader>J Ofrom pdb import set_trace; set_trace(
 """""""""""""""""""""""""" semshi settings """""""""""""""""""""""""""""""
 " Do not highlight for all occurances of variable under cursor
 let g:semshi#mark_selected_nodes=0
-" Do not show error sign since neomake is specicialized for that
+" Do not show error sign since neomake/ale is specicialized for that
 let g:semshi#error_sign=v:false
 let g:semshi#excluded_hl_groups=['local', 'attribute']
 let g:semshi#no_default_builtin_highlight=1
 let g:semshi#simplify_markup=1
 
-
-" ale options
+"{{ Linting and formating
+"""""""""""""""""""""""""""""" ale settings """""""""""""""""""""""
 let g:ale_python_flake8_options = '--ignore=E129,E501,E302,E265,E241,E305,E402,W503'
 let g:ale_python_pylint_options = '-j 0 --max-line-length=80 --ignore=C0111'
 let g:ale_list_window_size = 4
@@ -261,6 +261,7 @@ let g:ale_keep_list_window_open = '0'
 " Options are in .pylintrc!
 highlight VertSplit ctermbg=253
 
+" Linter signs
 let g:ale_sign_error = '‼'
 let g:ale_sign_warning = '∙'
 let g:ale_lint_on_text_changed = 'never'
@@ -268,6 +269,20 @@ let g:ale_lint_on_enter = '0'
 let g:ale_lint_on_save = '1'
 nmap <silent> <C-M> <Plug>(ale_previous_wrap)
 nmap <silent> <C-m> <Plug>(ale_next_wrap)
+
+" linters for different filetypes
+" let g:ale_linters = {
+"     \ 'python': ['pylint', 'flake8'],
+"     \ 'vim': ['vint']
+" \}
+
+" Only run linters in the g:ale_linters dictionary
+let g:ale_linters_explicit = 1
+
+"""""""""""""""""""""""""""""" neoformat settings """""""""""""""""""""""
+let g:neoformat_enabled_python = ['black', 'yapf']
+"}}
+
 
 " highlight python and self function
 autocmd BufEnter * syntax match Type /\v\.[a-zA-Z0-9_]+\ze(\[|\s|$|,|\]|\)|\.|:)/hs=s+1
@@ -312,14 +327,47 @@ let g:signify_sign_show_count = 0
 " default updatetime 4000ms is not good for async update
 set updatetime=100
 
-" **** Vim markdown
+
+"""""""""""""""""""""""""plasticboy/vim-markdown settings"""""""""""""""""""
+" Disable header folding
 let g:vim_markdown_folding_disabled = 1
 
-" Enable syntax highlighting for .bash_aliases
-au BufNewFile,BufRead .bashrc*,bashrc,bash.bashrc,.bash_aliases,.bash_profile*,.bash_logout*,*.bash,*.ebuild set filetype=sh
-au BufNewFile,BufRead *.txt set filetype=rest
-" Enable spellcheck for tex and markdown
-autocmd FileType latex,tex,md,markdown setlocal spell
+" Whether to use conceal feature in markdown
+let g:vim_markdown_conceal = 0
+
+" Disable math tex conceal and syntax highlight
+let g:tex_conceal = ''
+let g:vim_markdown_math = 0
+
+" Support front matter of various format
+let g:vim_markdown_frontmatter = 1  " for YAML format
+let g:vim_markdown_toml_frontmatter = 1  " for TOML format
+let g:vim_markdown_json_frontmatter = 1  " for JSON format
+
+" Let the TOC window autofit so that it doesn't take too much space
+let g:vim_markdown_toc_autofit = 1
+
+"""""""""""""""""""""""""markdown-preview settings"""""""""""""""""""
+" Only setting this for suitable platforms
+if g:is_win || g:is_mac
+    " Do not close the preview tab when switching to other buffers
+    let g:mkdp_auto_close = 0
+
+    " Shortcuts to start and stop markdown previewing
+    nnoremap <silent> <M-m> :MarkdownPreview<CR>
+    nnoremap <silent> <M-S-m> :MarkdownPreviewStop<CR>
+endif
+
+""""""""""""""""""""""""vim-markdownfootnotes settings""""""""""""""""""""""""
+" Replace the default mappings provided by the plugin
+imap ^^ <Plug>AddVimFootnote
+nmap ^^ <Plug>AddVimFootnote
+imap @@ <Plug>ReturnFromFootnote
+nmap @@ <Plug>ReturnFromFootnote
+
+""""""""""""""""""""""""deoplete-emoji settings""""""""""""""""""""""""""""
+" call deoplete#custom#source('emoji', 'converters', ['converter_emoji'])
+"}}
 
 " **** Supertab
 " au FileType python set omnifunc=pythoncomplete#Complete " This breaks Jedi
@@ -402,3 +450,53 @@ let g:vimtex_compiler_latexmk = {
         \   '-interaction=nonstopmode',
         \ ],
         \}
+
+""""""""""""""""""""""""""""vim-matchup settings"""""""""""""""""""""""""""""
+" Improve performance
+let g:matchup_matchparen_deferred = 1
+let g:matchup_matchparen_timeout = 100
+let g:matchup_matchparen_insert_timeout = 30
+
+" Enhanced matching with matchup plugin
+let g:matchup_override_vimtex = 1
+
+" Whether to enable matching inside comment or string
+let g:matchup_delim_noskips = 0
+
+" Show offscreen match pair in popup window
+let g:matchup_matchparen_offscreen = {'method': 'popup'}
+
+" Change highlight color of matching bracket for better visual effects
+augroup matchup_matchparen_highlight
+  autocmd!
+  autocmd ColorScheme * highlight MatchParen cterm=underline gui=underline
+augroup END
+
+" Show matching keyword as underlined text to reduce color clutter
+augroup matchup_matchword_highlight
+    autocmd!
+    autocmd ColorScheme * hi MatchWord cterm=underline gui=underline
+augroup END
+
+""""""""""""""""""""""""comfortable-motion settings """"""""""""""""""""""
+" let g:comfortable_motion_scroll_down_key = 'j'
+" let g:comfortable_motion_scroll_up_key = 'k'
+
+" let g:comfortable_motion_no_default_key_mappings = 1
+" " scroll based on window height
+" nnoremap <silent> <C-d> :call comfortable_motion#flick(winheight(0) * 2)<CR>
+" nnoremap <silent> <C-u> :call comfortable_motion#flick(winheight(0) * -2)<CR>
+" nnoremap <silent> <C-f> :call comfortable_motion#flick(winheight(0) * 4)<CR>
+" nnoremap <silent> <C-b> :call comfortable_motion#flick(winheight(0) * -4)<CR>
+
+" " Mouse settings
+" noremap <silent> <ScrollWheelDown> :call comfortable_motion#flick(20)<CR>
+" noremap <silent> <ScrollWheelUp>   :call comfortable_motion#flick(-20)<CR>
+
+"""""""""""""""""""""""""" asyncrun.vim settings """"""""""""""""""""""""""
+" Automatically open quickfix window of 6 line tall after asyncrun starts
+let g:asyncrun_open = 6
+if g:is_win
+    " Command output encoding for Windows
+    let g:asyncrun_encs = 'gbk'
+endif
