@@ -47,11 +47,6 @@ Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins' }
 " Python indent (follows the PEP8 style)
 Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}
-" Generate docstring
-" Plug 'Shougo/neosnippet.vim'
-" Plug 'himkt/docstring.nvim', { 'do': ':UpdateRemotePlugins' }
-"}}
-
 Plug 'tweekmonster/impsort.vim'                     " color and sort imports
 Plug 'wsdjeg/FlyGrep.vim'                           " awesome grep on the fly
 Plug 'tpope/vim-commentary'                         " comment-out by gc
@@ -73,6 +68,7 @@ Plug 'SirVer/ultisnips'                             " Track the engine.
 Plug 'honza/vim-snippets'                           " Snippets are separated from the engine. Add this if you want them:
 " Plug 'dense-analysis/ale'                         " python linters
 Plug 'neomake/neomake'
+Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }  " Automatically generate pydocstring
 
 " Auto format tools
 Plug 'sbdchd/neoformat', { 'on': 'Neoformat' }
@@ -156,7 +152,7 @@ call plug#end()
 "  Plugin settings
 " ---------------------------------------------------------------------
 
-"""""""""""""""""""""""""" semshi settings """""""""""""""""""""""""""""""
+""""""""""""""""""""""""""" semshi settings """""""""""""""""""""""""""""""
 " Do not highlight for all occurances of variable under cursor
 let g:semshi#mark_selected_nodes=0
 " Do not show error sign since neomake/ale is specicialized for that
@@ -230,6 +226,11 @@ au User Ncm2Plugin call ncm2#register_source({
         \ 'on_complete': ['ncm2#on_complete#delay', 180,
             \ 'ncm2#on_complete#omni', 'csscomplete#CompleteCSS'],
         \ })
+
+" Pydocstring
+let g:pydocstring_formatter = 'google'
+nmap <silent> <C-_> <Plug>(pydocstring)
+
 
 """""""""""""""""""""""""" NERDTree settings """""""""""""""""""""""""""""""
 " toggle nerdtree on ctrl+n
