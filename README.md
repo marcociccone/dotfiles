@@ -1,13 +1,13 @@
-# dotfiles
-My dotfiles collection
-
+# My dotfiles collection
 
 ### Install Neovim
-pip install pylon proselint flake8 pynvim neovim neovim-remote
+`pip install pylon proselint flake8 pynvim neovim neovim-remote`
 
-apt install ctags xdotool
+`apt install ctags xdotool`
 
-- Latest tmux is necessary, to have right term colors
+- Please use iterm
+
+- Latest tmux is necessary to have right term colors
 http://witkowskibartosz.com/blog/update-your-tmux-to-latest-version.html
 
 - how to test colors in your terminal
