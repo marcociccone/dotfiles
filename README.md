@@ -1,12 +1,24 @@
 # My dotfiles collection
 
+### Dependencies
+- `pip install pylon proselint flake8 pynvim neovim neovim-remote jedi`
+- `apt install ctags xdotool`
+
 ### Install Neovim
 Install neovim, from latest stable [release](https://github.com/neovim/neovim/releases/) or from [brew](https://docs.brew.sh/Installation) if you use macOs.
 I strongly suggest the use of a smart terminal as [iTerm](https://www.iterm2.com/), it will be easier to setup colors.
 
-### Dependencies
-- `pip install pylon proselint flake8 pynvim neovim neovim-remote`
-- `apt install ctags xdotool`
+Example: install neovim with appimage
+```
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+chmod u+x nvim.appimage
+./nvim.appimage
+```
+### Install NeoVim Plugins
+- Once you open nvim for the first time, PlugInstall will automatically install all the plugins.
+- If during the plugins installation something fails, just run again the `:PlugInstall` command.
+- **[Important]** run `:UpdateRemotePlugins` to update the plugin manifest and register remote plugin commands and functions.
+
 
 ### Termcolors
 - Latest tmux is necessary to have right term colors
