@@ -1,5 +1,9 @@
 # My dotfiles collection
 
+### Copy home
+- (Linux) `find . -mindepth 1 -maxdepth 1 -exec mv -t.. -- {}`
+- (Mac)   `find . -mindepth 1 -maxdepth 1 -execdir mv '{}' .. \;`
+
 ### Dependencies
 - `pip install pylon proselint flake8 pynvim neovim neovim-remote jedi`
 - `apt install ctags xdotool`
