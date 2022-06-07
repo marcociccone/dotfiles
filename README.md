@@ -1,7 +1,7 @@
 # My dotfiles collection
 
 ### Copy home
-- (Linux) `find . -mindepth 1 -maxdepth 1 -exec mv -t.. -- {}`
+- (Linux) `find . -mindepth 1 -maxdepth 1 -exec mv -t.. -- {} +`
 - (Mac)   `find . -mindepth 1 -maxdepth 1 -execdir mv '{}' .. \;`
 
 ### Dependencies
