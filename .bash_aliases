@@ -52,11 +52,11 @@ alias gff='git merge --ff-only'
 alias sshpw='ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no'
 
 # Force 256 colors tmux
-alias tmux="TERM=xterm-256color /home/ciccone/.local/bin/tmux -2"
+alias tmux="TERM=xterm-256color tmux -2"
 #alias tmux="tmux -2"  # Force tmux to use 256 colors
 # . $HOME/.tmux/set_tmux_config.sh
 # alias tmux='TERM=screen-256color tmux -2'
-alias vim="nvim"
+# alias vim="nvim"
 
 
 # Autocomplete ssh names in bash (defined in .ssh/config)
@@ -158,77 +158,17 @@ CVD6(){ export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:+${CUDA_VISIBLE_DEVIC
 CVD7(){ export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:+${CUDA_VISIBLE_DEVICES},}7; }
 CVDNONE(){ export CUDA_VISIBLE_DEVICES=-1; }
 
-# Displays
-D0(){ export DISPLAY=localhost:0.0; }
-D10(){ export DISPLAY=localhost:10.0; }
-D11(){ export DISPLAY=localhost:11.0; }
-D12(){ export DISPLAY=localhost:12.0; }
 
-wait-pid(){ tail --pid=$1 -f /dev/null; }
-wait-file(){ while [ ! -f $1 ]; do sleep 1; done; }
-
-# DOCKER
-# ======
-
-alias dk="docker"
-alias dkl="docker logs"
-alias dki="docker images"
-alias dkps="docker ps"
-alias dkpsa="docker ps -a"
-
-# dkrmname <name>: remove all containers having <name> in the container's name
-dkrmname(){
-    ids=`docker ps -a | grep $1 | awk '{print $1;}'`
-    docker rm $ids
+my_squeue() {
+    squeue --user="$USER" --format="%.8i %.9P %.30j %.8u %.2t %.10M %.10l %.10L %.4D %.4C %.4c %.8m %.10b %.20S %.20R %.20Z" --sort=+i
 }
 
-# dkattach <name>: attach to existing container
-dkattach() { docker start $1 && docker attach $1; }
 
-# dkattach <name>: attach to existing container
-dkattach() { docker start $1 && docker attach $1; }
-# dkrun [<args>] <image>: runs a container from a docker image
-
-dkrun(){
-   nvidia-docker run  -ti\
-       --workdir /host$PWD \
-       --volume /:/host \
-       --env PYTHONUNBUFFERED=x \
-       --env CUDA_CACHE_PATH=/host/tmp/cuda-cache "$@"
-}
-# dklaunch [<args>] <image> <cmd>: runs a command on a docker container; when the command finishes, it removes the container
-dklaunch(){ dkrun -ti --rm "$@"; }
-# dkpython <cmd>: launches a python2.7 command on the default docker container
-dkpython(){ dklaunch airlab/dl:latest bash -c "source activate py27; python $@"; }
-# dkipython <image> <cmd>: launches a python2.7 command a a user specified image
-dkipython(){ dklaunch $1 PY27; python "${@:2}"; }
-# dkpython3 <cmd>: launches a python3.6 command on the default docker container
-dkpython3(){ dklaunch airlab/dl:latest bash -c "source activate py36; python $@"; }
-# dkipython3 <image> <cmd>: launches a python3.6 command a a user specified image
-dkipython3(){ dklaunch $1 PY36; python "${@:2}"; }
-
-tb-docker() {
-	run-docker --container_name="{user}_tensorboard_{date}" --image_name="tensorflow/tensorflow:latest" --symlinks=0 --docker_args="-p $1:$1" '' '' tensorboard --port $1 --bind_all --logdir /exp;
+job_ip() {
+    local JOBID=$1
+    local NODE
+    NODE=$(scontrol show job $JOBID | awk -F= '/NodeList/ {print $2}')
+    getent hosts $NODE 2>/dev/null | awk 'NR==1{print $1}'
 }
 
-jupyter-docker() {
-    docker run --rm -it --shm-size 8G --cpuset-cpus=$2 -p $1:$1 --user $(id -u):$(id -g) --group-add users -v `pwd`:/exp -v $HOME/.jupyter/:/.jupyter -t ciccone/dl:cuda10.1_pytorch-1.3.1_tf-1.15_py36 jupyter notebook  --ip=0.0.0.0 --port=$1;
-}
-
-jupyter-nvidia-docker() {
-    NV_GPU=$3 nvidia-docker run --rm -it --shm-size 8G --cpuset-cpus=$2 -p $1:$1 --user $(id -u):$(id -g) --group-add users -v `pwd`:/exp -v $HOME/.jupyter/:/.jupyter  -t ciccone/dl:cuda10.1_pytorch-1.3.1_tf-1.15_py36 jupyter notebook --ip=0.0.0.0 --port=$1;
-}
-
-jupyterlab-docker() {
-    docker run --rm -it --shm-size 8G --cpuset-cpus=$2 -p $1:$1 --user $(id -u):$(id -g) --group-add users -v `pwd`:/exp -v $HOME/.jupyter/:/.jupyter -t ciccone/dl:cuda10.1_pytorch-1.3.1_tf-1.15_py36 jupyter lab  --ip=0.0.0.0 --port=$1;
-}
-
-jupyterlab-nvidia-docker() {
-    NV_GPU=$3 nvidia-docker run --rm -it --shm-size 8G --cpuset-cpus=$2 -p $1:$1 --user $(id -u):$(id -g) --group-add users -v `pwd`:/exp -v $HOME/.jupyter/:/.jupyter -t ciccone/dl:cuda10.1_pytorch-1.3.1_tf-1.15_py36 jupyter lab  --ip=0.0.0.0 --port=$1;
-}
-
-# jupyter-nvidia-docker() {
-#     NV_GPU=$3 nvidia-docker run --rm -it --shm-size 8G --cpuset-cpus=$2 -p $1:$1 --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor=unconfined --user $(id -u):$(id -g) --group-add users -v `pwd`:/exp -t ciccone/dl:cuda10_pytorch-1.1.0_tf-1.14_py36 jupyter notebook --ip=0.0.0.0 --port=$1 --NotebookApp.allow_origin='https://colab.research.google.com' --port=$1 --NotebookApp.port_retries=0;
-# }
-#
 
